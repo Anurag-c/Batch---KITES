@@ -101,6 +101,25 @@ void toh2(int disks, char src, char help, char dest, int& moves)
 	toh2(disks - 1, help, src, dest, moves); // 3, B, A, C
 }
 
+int tohOnlyMoves(int disks)
+{
+	return (1 << disks) - 1;
+}
+
+int josephus(int n, int k) // it always starts at 1
+{
+	if(n == 1) return 1;
+
+	int smallAns = josephus(n - 1, k);
+	return (smallAns + k > n) ? (smallAns + k) % n : smallAns + k;
+}
+
+// https://www.geeksforgeeks.org/josephus-problem-set-2-simple-solution-k-2/
+int josephusK2(int n)
+{
+	// implement for your self
+}
+
 int main()
 {
 	#ifndef ONLINE_JUDGE
@@ -127,4 +146,7 @@ int main()
 	int moves = 0;
 	toh2(3, 'A', 'B', 'C', moves);
 	cout<<moves;
+
+	cout<<tohOnlyMoves(3)<<"\n";
+	cout<<josephus(8, 3)<<"\n";
 }
