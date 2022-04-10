@@ -188,6 +188,77 @@ void printPermutations(string& s, string& currPath)
 	}
 }
 
+vector<vector<string>> getPartitions(string& s, int idx)
+{
+	if(idx == s.length()) return {{}};
+
+	int n = s.length()
+	vector<vector<string>>ans;
+	for(int cut = idx; cut < n; cut++) // cut = 0 (wrong)
+	{
+		if(!isPalindrome(s, idx, cut)) continue;
+
+		vector<vector<string>>smallAns = getPartitions(s, cut + 1) // (idx + 1 wrong)
+		int m = smallAns.size();
+		for(int i = 0; i < m; i++)
+		{
+			smallAns[i].insert(smallAns[i].begin(), s.substr(idx, cut - idx + 1));
+			ans.push_back(smallAns[i]);
+		}
+	}
+
+	return ans;
+}
+
+// cut strategy
+class Solution 
+{
+    vector<vector<string>>ans;
+    
+    bool isPalindrome(string& s, int start, int end)
+    {
+        while(start < end)
+        {
+            if(s[start] != s[end])
+                return false;
+            
+            start++;
+            end--;
+        }
+        
+        return true;
+    }
+    
+    void storePartitions(string& s, int idx, vector<string>& currPath)
+    {
+        int n = s.length();
+        
+        if(idx == n)
+        {
+            ans.push_back(currPath);
+            return;
+        }
+        
+        for(int cut = idx; cut < n; cut++)
+        {
+            if(!isPalindrome(s, idx, cut)) continue;
+            
+            currPath.push_back(s.substr(idx, cut - idx + 1));
+            storePartitions(s, cut + 1, currPath);
+            currPath.pop_back();
+        }
+    }
+    
+public:
+    
+    vector<vector<string>> partition(string s) 
+    {
+        vector<string>currPath;
+        storePartitions(s, 0, currPath);
+        return ans;
+    }
+};
+
 int main()
 {
 	#ifndef ONLINE_JUDGE
