@@ -116,28 +116,6 @@ int withObstacle(int r, int c, int n, int m, vector<vector<int>>& matrix, string
 	return cnt;
 }
 
-void decode(string s, int idx, string currPath)
-{
-	int n = s.length();
-
-	if(idx == n)
-	{
-		cout<<currPath<<"\n";
-		return;
-	}
-
-	if(s[idx] == '0') return;
-
-	int num = s[idx] - '0';
-	decode(s, idx + 1, currPath + char(num - 1 + 'A'));
-	if(idx + 1 < n)
-	{
-		num = (s[idx] - '0') * 10 + (s[idx] - '0');
-		if(num <= 26)
-			decode(s, idx + 2, currPath + char(num - 1 + 'A'));
-	}
-
-}
 
 int main()
 {
