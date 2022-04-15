@@ -53,7 +53,7 @@ bool isSafe(int nrow, int ncol, vector<vector<bool>>& vis)
 	return ((nrow < n) && (nrow >= 0) && (ncol >= 0) && (ncol < m) && (vis[nrow][ncol] == false));
 }
 
-vector<vector<int>>dirs = {{-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, 1}};
+vector<vector<int>>dirs = {{-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}};
 vector<char>mapping = {'U', 'E', 'R', 'S', 'D', 'W', 'L', 'N'};
 int floodFill(int r, int c, int n, int m, vector<vector<bool>>& vis, string currPath)
 {	

@@ -253,10 +253,143 @@ int queensPermutation2D(vector<vector<int>>& grid, int queens, int queenNo)
 	return cnt;
 }
 
-int queensCombination2D(vector<vector<int>>& grid, int queens, int queenNo)
+int queensCombination2DNc0(vector<vector<int>>& grid, int idx, int queens, int queenNo)
 {
-	return 0;
+	if(queenNo > queens)
+	{
+		for(vector<int>& v: grid)
+		{
+			for(int num : v) cout<<num<<" ";
+			cout<<"\n";
+		}
+
+		cout<<"\n";
+		return 1;
+	}
+
+	int rows = grid.size();
+	int cols = grid[0].size();
+	int boxes = rows * cols;
+	int cnt = 0;
+
+	for(int i = idx; i < boxes; i++)
+	{
+		int r = i / cols;
+		int c = i % cols;
+
+		grid[r][c] = queenNo;
+		cnt += queensCombination2DNc0(grid, i + 1, queens, queenNo + 1);
+		grid[r][c] = -1;
+	}
+
+	return cnt;
 }
+
+vector<vector<int>>dirs = {{-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}};
+bool isSafe(vector<vector<string>>& grid, int r, int c)
+{
+	int rows = grid.size();
+	int cols = grid[0].size();
+
+	for(int i = 0; i < 8; i++)
+	{
+		for(int rad = 1; rad < max(rows, cols); rad++)
+		{
+			int nr = r + (rad * dirs[i][0]);
+			int nc = c + (rad * dirs[i][1]);
+			
+			if(nr < 0 || nr >= rows || nc < 0 || nc >= cols) break;
+
+			if(grid[nr][nc] == "Q") return false;
+		}
+	}
+
+	return true;
+}
+
+int nQueen(vector<vector<string>>& grid, int idx, int queens)
+{
+	if(queens == 0)
+	{
+		for(vector<string>& v: grid)
+		{
+			for(string s : v) cout<<s<<" ";
+			cout<<"\n";
+		}
+
+		cout<<"\n";
+		return 1;
+	}
+
+	int rows = grid.size();
+	int cols = grid[0].size();
+	int boxes = rows * cols;
+	int cnt = 0;
+
+	for(int i = idx; i < boxes; i++)
+	{
+		int r = i / cols;
+		int c = i % cols;
+
+		if(!isSafe(grid, r, c)) continue;
+
+		grid[r][c] = 'Q';
+		cnt += nQueen(grid, i + 1, queens - 1);
+		grid[r][c] = '.';
+	}
+
+	return cnt;
+}
+
+vector<bool>visCol(4, false);
+vector<bool>visDiag(7, false);
+vector<bool>visAdiag(7, false);
+
+bool isSafe2(vector<string>& grid, int row, int col)
+{
+	int m = grid[0].size();
+	return (!visCol[col]) && (!visDiag[row - col + m - 1]) && (!visAdiag[row + col]); 
+}
+
+void toggle(vector<string>& grid, int row, int col)
+{
+	int m = grid.size();
+	visCol[col] = !visCol[col];
+	visDiag[row - col + m - 1] = !visDiag[row - col + m - 1];
+	visAdiag[row + col] = !visAdiag[row + col];
+	if(grid[row][col] == 'Q') grid[row][col] = '.';
+	else grid[row][col] = 'Q';
+}
+
+int nQueenOpt(vector<string>& grid, int queens, int row)
+{
+	if(queens == 0)
+	{
+		for(string s: grid)
+		{
+			cout<<s;
+			cout<<"\n";
+		}
+
+		cout<<"\n";
+		return 1;
+	}
+
+	int cnt = 0;
+	int m = grid[0].size();
+	for(int col = 0; col < m; col++)
+	{
+		if(isSafe2(grid, row, col))
+		{
+			toggle(grid, row, col);
+			cnt += nQueenOpt(grid, queens - 1, row + 1);
+			toggle(grid, row, col);
+		}
+	}
+
+	return cnt;
+}
+
 
 int main()
 {
@@ -265,9 +398,11 @@ int main()
 		freopen("output.txt", "w", stdout);
 	#endif
 
-	vector<int>boxes(6, -1);
-	vector<vector<int>>grid(2, vector<int>(2, -1));
+	//vector<int>boxes(6, -1);
+	vector<string>grid(4, "....");
 	//cout<<queensPermutation1D(boxes, 3, 1)<<"\n";
 	// cout<<queensCombination1DNc0(boxes, 0, 3, 1)<<"\n";
-	cout<<queensPermutation2D(grid, 2, 1);
+	//cout<<queensPermutation2D(grid, 2, 1);
+
+	cout<<nQueenOpt(grid, 4, 0);
 }
